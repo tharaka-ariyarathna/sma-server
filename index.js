@@ -20,7 +20,7 @@ mongoose
         process.env.MONGO_DB,
         {useNewUrlParser: true , useUnifiedTopology: true}
     )
-    .then(() => app.listen(process.env.PORT || 3000, () => console.log(`Listning to post ${process.env.PORT}`)))
+    .then(() => app.listen(process.env.PORT || 5000, () => console.log(`Listning to post ${process.env.PORT}`)))
     .catch(err => console.log(`Database error ${err}`))
 
 app.use('/auth', AuthRoute) ;
