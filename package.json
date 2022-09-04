@@ -5,8 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "react-scripts start",
-    "start": "serve -s build"
+    "start": "node index.js"
     },
   "author": "",
   "license": "ISC",
