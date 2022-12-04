@@ -14,3 +14,5 @@ const postSchema = mongoose.Schema({
 const PostModel = mongoose.model("Posts", postSchema ) ;
 
 export default PostModel  ;
+
+//THis is for a check
