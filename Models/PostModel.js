@@ -1,18 +1,20 @@
 import mongoose from "mongoose";
 
-const postSchema = mongoose.Schema({
-    userId:{
-        type: String,
-        required: true
+const postSchema = mongoose.Schema(
+  {
+    userId: {
+      type: String,
+      required: true,
     },
     discription: String,
     likes: [],
-    image: String
-}, {timestamps: true}
-) ;
+    image: String,
+  },
+  { timestamps: true }
+);
 
-const PostModel = mongoose.model("Posts", postSchema ) ;
+const PostModel = mongoose.model("Posts", postSchema);
 
-export default PostModel  ;
+export default PostModel;
 
 //THis is for a check
