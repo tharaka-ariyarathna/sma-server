@@ -14,7 +14,7 @@ export const registerUser = async (req, res) => {
     const oldUser = await UserModel.findOne({ username });
 
     if (oldUser) {
-      return res.status(400).json({ messege: "Usename already taken" });
+      return res.status(400).json("Usename already taken");
     }
 
     const user = await newUser.save();
