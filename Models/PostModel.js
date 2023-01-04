@@ -9,6 +9,7 @@ const postSchema = mongoose.Schema(
     discription: String,
     likes: [],
     image: String,
+    image_url: String,
   },
   { timestamps: true }
 );
