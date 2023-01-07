@@ -1,6 +1,7 @@
 import e from "express";
 import bcrypt from "bcryptjs";
 import UserModel from "../Models/UserModel.js";
+import jwt from "jsonwebtoken"
 
 //get a user
 
@@ -23,7 +24,7 @@ export const getUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   const id = req.params.id;
-  const { _id , curruntUserAdminStatus, password } = req.body;
+  const { _id, curruntUserAdminStatus, password } = req.body;
 
   if (id === _id) {
     try {
@@ -35,7 +36,13 @@ export const updateUser = async (req, res) => {
       const user = await UserModel.findByIdAndUpdate(id, req.body, {
         new: true,
       });
-      res.status(200).json(user);
+
+      const token = jwt.sign(
+        { username: user.username, id: user._id },
+        process.env.JWT_KEY,
+        { expiresIn: "1h" }
+      );
+      res.status(200).json({user, token});
     } catch (error) {
       res.status(500).json(error);
     }
