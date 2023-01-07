@@ -1,7 +1,22 @@
-import e from "express";
+import e, { response } from "express";
 import bcrypt from "bcryptjs";
 import UserModel from "../Models/UserModel.js";
 import jwt from "jsonwebtoken"
+
+//get all users
+
+export const getAllUsers = async(req, res) => {
+  try {
+    let data = await UserModel.find() ;
+    const users = data.map(user => {
+      const {password, ...otherDetails} = user._doc ;
+      return otherDetails ;
+    })
+    res.status(200).json({data : users}) ;
+  } catch (error) {
+    res.status(400).json({error : error})
+  }
+}
 
 //get a user
 
