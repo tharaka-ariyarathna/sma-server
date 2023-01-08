@@ -133,7 +133,7 @@ export const unFollowUser = async (req, res) => {
       if (followUser.followers.includes(currentUserId)) {
         await followUser.updateOne({ $pull: { followers: currentUserId } });
         await followingUser.updateOne({ $pull: { followings: id } });
-        const user = await UserModel.findById(_id);
+        const user = await UserModel.findById(currentUserId);
         const token = generateJwt(user);
         res.status(200).json({ user, token });
       } else {
