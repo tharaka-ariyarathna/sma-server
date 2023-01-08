@@ -1,22 +1,23 @@
 import e, { response } from "express";
 import bcrypt from "bcryptjs";
 import UserModel from "../Models/UserModel.js";
-import jwt from "jsonwebtoken"
+import { generateJwt } from "../helpers/jwt.js";
+import jwt from "jsonwebtoken";
 
 //get all users
 
-export const getAllUsers = async(req, res) => {
+export const getAllUsers = async (req, res) => {
   try {
-    let data = await UserModel.find() ;
-    const users = data.map(user => {
-      const {password, ...otherDetails} = user._doc ;
-      return otherDetails ;
-    })
-    res.status(200).json({data : users}) ;
+    let data = await UserModel.find();
+    const users = data.map((user) => {
+      const { password, ...otherDetails } = user._doc;
+      return otherDetails;
+    });
+    res.status(200).json({ data: users });
   } catch (error) {
-    res.status(400).json({error : error})
+    res.status(400).json({ error: error });
   }
-}
+};
 
 //get a user
 
@@ -57,7 +58,7 @@ export const updateUser = async (req, res) => {
         process.env.JWT_KEY,
         { expiresIn: "1h" }
       );
-      res.status(200).json({user, token});
+      res.status(200).json({ user, token });
     } catch (error) {
       res.status(500).json(error);
     }
@@ -99,14 +100,13 @@ export const followUser = async (req, res) => {
       const followingUser = await UserModel.findById(_id);
 
       if (!followUser.followers.includes(_id)) {
-        console.log("Here2")
         await followUser.updateOne({ $push: { followers: _id } });
         await followingUser.updateOne({ $push: { followings: id } });
-        let user = await UserModel.findById(_id);
+        const user = await UserModel.findById(_id);
 
-        const token = generateJwt(user) ;
+        const token = generateJwt(user);
 
-        res.status(200).json({user, token});
+        res.status(200).json({ user, token });
       } else {
         res.status(403).json("User alreaddy following");
       }
@@ -121,7 +121,7 @@ export const followUser = async (req, res) => {
 export const unFollowUser = async (req, res) => {
   const id = req.params.id;
 
-  const { currentUserId } = req.body;
+  const currentUserId = req.body._id;
 
   try {
     if (id === currentUserId) {
@@ -133,7 +133,9 @@ export const unFollowUser = async (req, res) => {
       if (followUser.followers.includes(currentUserId)) {
         await followUser.updateOne({ $pull: { followers: currentUserId } });
         await followingUser.updateOne({ $pull: { followings: id } });
-        res.status(200).json("User unfollowed");
+        const user = await UserModel.findById(_id);
+        const token = generateJwt(user);
+        res.status(200).json({ user, token });
       } else {
         res.status(403).json("You are not following user");
       }
@@ -143,12 +145,4 @@ export const unFollowUser = async (req, res) => {
   }
 };
 
-const generateJwt = (user) => {
-  const token = jwt.sign(
-    { username: user.username, id: user._id },
-    process.env.JWT_KEY,
-    { expiresIn: "1h" }
-  )
 
-  return token ;
-}
