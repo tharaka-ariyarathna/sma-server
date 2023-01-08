@@ -130,3 +130,16 @@ export const gettimelinePosts = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
+//Get all user posts
+
+export const getAllUserPosts = async(req, res) => {
+  const id = req.params.id ;
+
+  try {
+    const userPosts = await PostModel.find({userId: id }) ; 
+    res.status(200).json(userPosts.sort((a, b) => b.createdAt - a.createdAt)) ;
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}
