@@ -89,19 +89,24 @@ export const deleteUser = async (req, res) => {
 export const followUser = async (req, res) => {
   const id = req.params.id;
 
-  const { currentUserId } = req.body;
+  const { _id } = req.body;
 
   try {
-    if (id === currentUserId) {
+    if (id === _id) {
       res.status(403).json("Action forbidden!");
     } else {
       const followUser = await UserModel.findById(id);
-      const followingUser = await UserModel.findById(currentUserId);
+      const followingUser = await UserModel.findById(_id);
 
-      if (!followUser.followers.includes(currentUserId)) {
-        await followUser.updateOne({ $push: { followers: currentUserId } });
+      if (!followUser.followers.includes(_id)) {
+        console.log("Here2")
+        await followUser.updateOne({ $push: { followers: _id } });
         await followingUser.updateOne({ $push: { followings: id } });
-        res.status(200).json("User followed");
+        let user = await UserModel.findById(_id);
+
+        const token = generateJwt(user) ;
+
+        res.status(200).json({user, token});
       } else {
         res.status(403).json("User alreaddy following");
       }
@@ -137,3 +142,13 @@ export const unFollowUser = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
+const generateJwt = (user) => {
+  const token = jwt.sign(
+    { username: user.username, id: user._id },
+    process.env.JWT_KEY,
+    { expiresIn: "1h" }
+  )
+
+  return token ;
+}
