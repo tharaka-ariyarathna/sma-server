@@ -18,7 +18,6 @@ export const registerUser = async (req, res) => {
     }
 
     const user = await newUser.save();
-    /*This is for checking purpose*/
 
     const token = jwt.sign(
       {
