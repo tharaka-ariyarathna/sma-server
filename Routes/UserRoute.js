@@ -12,8 +12,8 @@ import authMiddleware from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 router.get("/", getAllUsers) ;
-router.get("/:id", authMiddleware, getUser);
-router.put("/:id", updateUser);
+router.get("/:id", getUser);
+router.put("/:id", authMiddleware, updateUser);
 router.delete("/:id", authMiddleware, deleteUser);
 router.put("/:id/follow", authMiddleware, followUser);
 router.put("/:id/unfollow", authMiddleware, unFollowUser);
