@@ -145,4 +145,33 @@ export const unFollowUser = async (req, res) => {
   }
 };
 
+//Getting search results
 
+export const getSearchResults = async (req, res) => {
+  const name = req.query.data.split(" ");
+  const firstname = name[0];
+  const lastname = name[1];
+
+  try {
+    let users = await UserModel.find(
+      { firstname: firstname },
+      { firstname: true, lastname: true, username: true, _id: true }
+    );
+    if (lastname) {
+      const usersByLastname = await UserModel.find(
+        { firstname: { $ne: firstname }, lastname: lastname },
+        { firstname: true, lastname: true, username: true, _id: true }
+      );
+      users = users.concat(usersByLastname);
+    } else {
+      const usersByUsrname = await UserModel.find(
+        { firstname: { $ne: firstname }, username: firstname },
+        { firstname: true, lastname: true, username: true, _id: true }
+      );
+      users = users.concat(usersByUsrname) ;
+    }
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Internal error" });
+  }
+};
